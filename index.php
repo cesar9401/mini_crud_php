@@ -1,24 +1,3 @@
-<?php
-	session_start();
-
-	require('db.php');
-
-	if(!empty($_POST['user']) && !empty($_POST['password'])) {
-		$records = $conn->prepare('SELECT * FROM users WHERE username = :user AND password = :password');
-		$records->bindParam(':user', $_POST['user']);
-		$records->bindParam(':password', $_POST['password']);
-		$records->execute();
-		$results = $records->fetch(PDO::FETCH_ASSOC);
-
-		$message = '';
-
-		if(count($results) > 0) {
-			$_SESSION['username'] = $results['username'];
-			header('Location: profile.php');
-		}
-	}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +10,7 @@
 </head>
 <body>
 	<div class="container mt-4">
-		<form action="index.php" method="post">
+		<form action="log.php" method="post">
 			<div class="grid-container">
 				<div class="item item-center item-image">
 					<img src="assets/img/lnr-user.svg" alt="login">
@@ -54,10 +33,19 @@
 
 			<div class="grid-container">
 				<div class="item item-center">
-					<button class="btn btn-primary mt-1" type="submit">log in</button>
+					<button class="btn btn-primary mt-1" type="submit" name="login">log in</button>
 				</div>
 			</div>
 		</form>
 	</div>
+
+	<!-- Colocar mensaje aqui -->
+	<?php session_start(); ?>
+	<?php if(isset($_SESSION['message'])): ?>
+		<script>
+			alert("<?php echo $_SESSION['message']; ?>");
+		</script>
+		<?php  unset($_SESSION['message']); ?>
+	<?php endif; ?>
 </body>
 </html>
